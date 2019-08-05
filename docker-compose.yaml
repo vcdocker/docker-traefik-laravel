@@ -47,7 +47,7 @@ services:
       labels:
         - traefik.frontend.rule=Host:phpmyadmin.${DOMAIN?Variable DOMAIN not set}
         - traefik.enable=true
-        - traefik.port=8080
+        - traefik.port=80
         - traefik.tags=${TRAEFIK_PUBLIC_TAG:-traefik-public}
         - traefik.docker.network=traefik-public
         # Traefik service that listens to HTTP
