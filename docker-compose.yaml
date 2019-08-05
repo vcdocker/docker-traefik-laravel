@@ -3,7 +3,7 @@ services:
   app:
     image: nightfuryest/laravel-prod:latest
     volumes:
-      - app:/var/www/app
+      - app:/var/www
     networks:
       - default
       - traefik-public
@@ -54,7 +54,7 @@ services:
         - traefik.redirectorservice.frontend.redirect.entryPoint=https
         # Traefik service that listens to HTTPS
         - traefik.webservice.frontend.entryPoints=https
-        - traefik.frontend.auth.basic.users=${USERNAME?Variable USERNAME not set}:${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
+        # - traefik.frontend.auth.basic.users=${USERNAME?Variable USERNAME not set}:${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
 volumes:
   app:
   db:
