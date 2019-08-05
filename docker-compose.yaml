@@ -1,6 +1,6 @@
 version: "3"
 services:
-  confluence:
+  app:
     image: nightfuryest/laravel-prod:latest
     volumes:
       - app:/var/www/app
