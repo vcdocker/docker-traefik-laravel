@@ -23,6 +23,7 @@ services:
         - traefik.webservice.frontend.entryPoints=https
   database:
     image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
     environment:
       - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD?Variable MYSQL_ROOT_PASSWORD not set}"
       - "MYSQL_DATABASE=${MYSQL_DATABASE?Variable MYSQL_DATABASE not set}"
