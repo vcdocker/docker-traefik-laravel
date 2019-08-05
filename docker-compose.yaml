@@ -20,7 +20,7 @@ services:
         - traefik.redirectorservice.frontend.entryPoints=http
         - traefik.redirectorservice.frontend.redirect.entryPoint=https
         # Traefik service that listens to HTTPS
-        # - traefik.webservice.frontend.entryPoints=https
+        - traefik.webservice.frontend.entryPoints=https
   database:
     image: mysql:8.0
     environment:
