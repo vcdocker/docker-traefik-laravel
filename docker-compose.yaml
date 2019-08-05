@@ -1,0 +1,63 @@
+version: "3"
+services:
+  confluence:
+    image: nightfuryest/laravel-prod:latest
+    volumes:
+      - app:/var/www/app
+    networks:
+      - default
+      - traefik-public
+    links:
+      - database
+    deploy:
+      labels:
+        - traefik.frontend.rule=Host:${APP_DOMAIN?Variable APP_DOMAIN not set}
+        - traefik.enable=true
+        - traefik.port=8080
+        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-traefik-public}
+        - traefik.docker.network=traefik-public
+        # Traefik service that listens to HTTP
+        - traefik.redirectorservice.frontend.entryPoints=http
+        - traefik.redirectorservice.frontend.redirect.entryPoint=https
+        # Traefik service that listens to HTTPS
+        # - traefik.webservice.frontend.entryPoints=https
+  database:
+    image: mysql:8.0
+    environment:
+      - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD?Variable MYSQL_ROOT_PASSWORD not set}"
+      - "MYSQL_DATABASE=${MYSQL_DATABASE?Variable MYSQL_DATABASE not set}"
+      - "MYSQL_USER=${MYSQL_USER?Variable MYSQL_USER not set}"
+      - "MYSQL_PASSWORD=${MYSQL_PASSWORD?Variable MYSQL_PASSWORD not set}"
+    networks:
+      - default
+      - traefik-public
+    volumes:
+      - db:/var/lib/mysql
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    environment:
+      - "PMA_HOST=database"
+    networks:
+      - default
+      - traefik-public
+    links:
+      - database
+    deploy:
+      labels:
+        - traefik.frontend.rule=Host:phpmyadmin.${DOMAIN?Variable DOMAIN not set}
+        - traefik.enable=true
+        - traefik.port=8080
+        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-traefik-public}
+        - traefik.docker.network=traefik-public
+        # Traefik service that listens to HTTP
+        - traefik.redirectorservice.frontend.entryPoints=http
+        - traefik.redirectorservice.frontend.redirect.entryPoint=https
+        # Traefik service that listens to HTTPS
+        - traefik.webservice.frontend.entryPoints=https
+        - traefik.frontend.auth.basic.users=${USERNAME?Variable USERNAME not set}:${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
+volumes:
+  app:
+  db:
+networks:
+  traefik-public:
+    external: true
